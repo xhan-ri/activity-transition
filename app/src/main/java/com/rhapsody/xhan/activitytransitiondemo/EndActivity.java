@@ -5,6 +5,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.transition.ChangeBounds;
+import android.transition.ChangeImageTransform;
 import android.transition.TransitionSet;
 import android.view.View;
 import android.view.Window;
@@ -22,6 +23,7 @@ public class EndActivity extends AppCompatActivity {
 		enterTransitionSet = new TransitionSet(this, null);
 		enterTransitionSet
 				.addTransition(new ChangeBounds())
+//				.addTransition(new ChangeImageTransform())
 				.addTransition(new RotateTransition(this).startAngle(0).endAngle(405).exiting(false))
 		;
 		enterTransitionSet.setDuration(getResources().getInteger(R.integer.transition_duration));
@@ -47,6 +49,7 @@ public class EndActivity extends AppCompatActivity {
 		enterTransitionSet = new TransitionSet(this, null);
 		enterTransitionSet
 				.addTransition(new ChangeBounds())
+//				.addTransition(new ChangeImageTransform())
 				.addTransition(new RotateTransition(this).startAngle(405).endAngle(0).exiting(true))
 		;
 		enterTransitionSet.setDuration(getResources().getInteger(R.integer.transition_duration));

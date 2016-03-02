@@ -7,6 +7,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.transition.ChangeBounds;
+import android.transition.ChangeImageTransform;
 import android.transition.TransitionSet;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,7 +36,9 @@ public class StartActivity extends AppCompatActivity {
 				exitTransitionSet = new TransitionSet(StartActivity.this, null);
 				exitTransitionSet
 						.addTransition(new ChangeBounds())
-						.addTransition(new RotateTransition(StartActivity.this).startAngle(-45).endAngle(0).exiting(true));
+//						.addTransition(new ChangeImageTransform())
+						.addTransition(new RotateTransition(StartActivity.this).startAngle(-45).endAngle(0).exiting(true))
+				;
 				exitTransitionSet.setDuration(getResources().getInteger(R.integer.transition_duration));
 				getWindow().setSharedElementExitTransition(exitTransitionSet);
 
@@ -46,7 +49,9 @@ public class StartActivity extends AppCompatActivity {
 				exitTransitionSet = new TransitionSet(StartActivity.this, null);
 				exitTransitionSet
 						.addTransition(new ChangeBounds())
-						.addTransition(new RotateTransition(StartActivity.this).startAngle(0).endAngle(-45).exiting(false));
+//						.addTransition(new ChangeImageTransform())
+						.addTransition(new RotateTransition(StartActivity.this).startAngle(0).endAngle(-45).exiting(false))
+				;
 				exitTransitionSet.setDuration(getResources().getInteger(R.integer.transition_duration));
 				getWindow().setSharedElementExitTransition(exitTransitionSet);
 			}
