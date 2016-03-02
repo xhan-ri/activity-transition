@@ -2,4 +2,5 @@
 <resources>
     <string name="transition_name">rotate_image</string>
     <item type="id" name="id_image"/>
+    <integer name="transition_duration">2000</integer>
 </resources>

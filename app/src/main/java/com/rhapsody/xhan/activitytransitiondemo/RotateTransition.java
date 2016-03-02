@@ -1,7 +1,12 @@
 package com.rhapsody.xhan.activitytransitiondemo;
 
 import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.os.Build;
 import android.text.TextUtils;
 import android.transition.Transition;
 import android.transition.TransitionValues;
@@ -9,31 +14,31 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
-
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class RotateTransition extends Transition {
 	private static final String LOG_TAG = "RotateTransition";
-	private static final String PROP_ROTATION = "org.xiaofeng.playground:RotateTransition:rotation";
-	private List<String> transitionNameList = new LinkedList<>();
+	private static final String PROP_ROTATION = "RotateTransition:rotation";
 	private float startAngle, endAngle;
-
-	public RotateTransition(String... transitionNames) {
-		transitionNameList.addAll(Arrays.asList(transitionNames));
+	Context context;
+	final String transitionName;
+	boolean exiting = false;
+	public RotateTransition(Context context) {
+		this.context = context;
+		transitionName = context.getString(R.string.transition_name);
 	}
 
 	@Override
 	public void captureStartValues(TransitionValues transitionValues) {
-		if (TextUtils.isEmpty(transitionValues.view.getTransitionName()) || !transitionNameList.contains(transitionValues.view.getTransitionName())) {
+		if (TextUtils.isEmpty(transitionValues.view.getTransitionName())) {
 			return;
 		}
+
 		Log.i(LOG_TAG, ".");
-		Log.i(LOG_TAG, "Capturing start value for view = " + transitionValues.view.getTransitionName());
+		Log.i(LOG_TAG, "Capturing start value for view = " + transitionValues.view.getTransitionName() + ", context = " + context.getClass().getSimpleName() + ", exiting = " + exiting);
 		Log.i(LOG_TAG, "Before capture: " + dumpMap(transitionValues.values));
-		if (transitionValues.view.getTransitionName().equals("animated_image2")) {
+		if (transitionValues.view.getTransitionName().equals(transitionName)) {
 			captureValues(transitionValues, startAngle);
 		} else {
 			captureValues(transitionValues, transitionValues.view.getRotation());
@@ -43,13 +48,13 @@ public class RotateTransition extends Transition {
 
 	@Override
 	public void captureEndValues(TransitionValues transitionValues) {
-		if (TextUtils.isEmpty(transitionValues.view.getTransitionName()) || !transitionNameList.contains(transitionValues.view.getTransitionName())) {
+		if (TextUtils.isEmpty(transitionValues.view.getTransitionName())) {
 			return;
 		}
 		Log.i(LOG_TAG, ".");
-		Log.i(LOG_TAG, "Capturing end value for view = " + transitionValues.view.getTransitionName());
+		Log.i(LOG_TAG, "Capturing end value for view = " + transitionValues.view.getTransitionName() + ", context = " + context.getClass().getSimpleName() + ", exiting = " + exiting);
 		Log.i(LOG_TAG, "Before capture: " + dumpMap(transitionValues.values));
-		if (transitionValues.view.getTransitionName().equals("animated_image2")) {
+		if (transitionValues.view.getTransitionName().equals(transitionName)) {
 			captureValues(transitionValues, endAngle);
 		} else {
 			captureValues(transitionValues, transitionValues.view.getRotation());
@@ -71,23 +76,36 @@ public class RotateTransition extends Transition {
 		final View view = endValues.view;
 		final float startRotation = (float)startValues.values.get(getPropKey(PROP_ROTATION, view));
 		final float endRotation = (float)endValues.values.get(getPropKey(PROP_ROTATION, view));
-		Log.i(LOG_TAG, "start rotation = " + startRotation + ", endRotation = " + endRotation);
+		Log.i(LOG_TAG, "startRotation = " + startRotation + ", endRotation = " + endRotation);
 		// no animation needed.
 		if (startRotation == endRotation) {
 			Log.w(LOG_TAG, "No animation for view");
 			return null;
 		}
 
-		ValueAnimator rotateAnimator = new ValueAnimator();
-		rotateAnimator.setFloatValues(startRotation, endRotation);
-		rotateAnimator.setTarget(view);
-		rotateAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+		Animator rotateAnimator = ObjectAnimator.ofFloat(view, "rotation", startRotation, endRotation);
+		rotateAnimator.addListener(new Animator.AnimatorListener() {
 			@Override
-			public void onAnimationUpdate(ValueAnimator animation) {
-				view.setRotation((float)animation.getAnimatedValue());
+			public void onAnimationStart(Animator animation) {
+				Log.i(LOG_TAG, "Transition animation started context = " + context.getClass().getSimpleName()  + ", exiting = " + exiting);
+			}
+
+			@Override
+			public void onAnimationEnd(Animator animation) {
+				Log.i(LOG_TAG, "Transition animation ended");
+			}
+
+			@Override
+			public void onAnimationCancel(Animator animation) {
+
+			}
+
+			@Override
+			public void onAnimationRepeat(Animator animation) {
+
 			}
 		});
-
 		return rotateAnimator;
 	}
 
@@ -103,13 +121,18 @@ public class RotateTransition extends Transition {
 		return sb.toString();
 	}
 
-	public RotateTransition setStartAngle(float startAngle) {
+	public RotateTransition startAngle(float startAngle) {
 		this.startAngle = startAngle;
 		return this;
 	}
 
-	public RotateTransition setEndAngle(float endAngle) {
+	public RotateTransition endAngle(float endAngle) {
 		this.endAngle = endAngle;
+		return this;
+	}
+
+	public RotateTransition exiting(boolean exiting) {
+		this.exiting = exiting;
 		return this;
 	}
 }

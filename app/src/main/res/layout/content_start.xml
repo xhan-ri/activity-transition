@@ -14,7 +14,7 @@
     tools:showIn="@layout/activity_start">
 
     <ImageView
-        android:id="@id/id_image"
+        android:id="@+id/start_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:rotation="-45"

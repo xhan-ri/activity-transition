@@ -1,41 +1,63 @@
 package com.rhapsody.xhan.activitytransitiondemo;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.transition.ChangeBounds;
+import android.transition.TransitionSet;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 
 public class StartActivity extends AppCompatActivity {
 
 	ImageView imageView;
+	TransitionSet exitTransitionSet;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
+		getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_start);
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
-		imageView = (ImageView)findViewById(R.id.id_image);
+		imageView = (ImageView)findViewById(R.id.start_image);
+
 		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				exitTransitionSet = new TransitionSet(StartActivity.this, null);
+				exitTransitionSet
+						.addTransition(new ChangeBounds())
+						.addTransition(new RotateTransition(StartActivity.this).startAngle(-45).endAngle(0).exiting(true));
+				exitTransitionSet.setDuration(getResources().getInteger(R.integer.transition_duration));
+				getWindow().setSharedElementExitTransition(exitTransitionSet);
+
 				Intent startIntent = new Intent(StartActivity.this, EndActivity.class);
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-					ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(StartActivity.this, imageView, imageView.getTransitionName());
-					startActivity(startIntent, activityOptions.toBundle());
-				} else {
-					startActivity(startIntent);
-				}
+				ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(StartActivity.this, imageView, imageView.getTransitionName());
+				startActivity(startIntent, activityOptions.toBundle());
+
+				exitTransitionSet = new TransitionSet(StartActivity.this, null);
+				exitTransitionSet
+						.addTransition(new ChangeBounds())
+						.addTransition(new RotateTransition(StartActivity.this).startAngle(0).endAngle(-45).exiting(false));
+				exitTransitionSet.setDuration(getResources().getInteger(R.integer.transition_duration));
+				getWindow().setSharedElementExitTransition(exitTransitionSet);
 			}
 		});
+		getWindow().setExitTransition(null);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override
