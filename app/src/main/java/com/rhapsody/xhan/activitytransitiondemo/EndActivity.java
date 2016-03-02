@@ -20,6 +20,7 @@ public class EndActivity extends AppCompatActivity {
 		getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
 		getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
 		getWindow().setEnterTransition(null);
+		// setup shared elements enter transition.
 		enterTransitionSet = new TransitionSet(this, null);
 		enterTransitionSet
 				.addTransition(new ChangeBounds())
@@ -46,6 +47,8 @@ public class EndActivity extends AppCompatActivity {
 
 	@Override
 	public void onBackPressed() {
+		// for some reason, the enter transition is used to play exit animation, so have
+		// to overwrite the transition to make it looks like reverse.
 		enterTransitionSet = new TransitionSet(this, null);
 		enterTransitionSet
 				.addTransition(new ChangeBounds())

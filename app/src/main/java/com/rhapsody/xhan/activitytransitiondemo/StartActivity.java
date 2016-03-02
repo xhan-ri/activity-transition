@@ -33,6 +33,7 @@ public class StartActivity extends AppCompatActivity {
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				// setup exit transition
 				exitTransitionSet = new TransitionSet(StartActivity.this, null);
 				exitTransitionSet
 						.addTransition(new ChangeBounds())
@@ -46,6 +47,8 @@ public class StartActivity extends AppCompatActivity {
 				ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(StartActivity.this, imageView, imageView.getTransitionName());
 				startActivity(startIntent, activityOptions.toBundle());
 
+				// for some reason, exit transition will be used for come back to this activity,
+				// so overwrite transition to make it looks like a reverse.
 				exitTransitionSet = new TransitionSet(StartActivity.this, null);
 				exitTransitionSet
 						.addTransition(new ChangeBounds())
