@@ -37,7 +37,7 @@ public class StartActivity extends AppCompatActivity {
 				exitTransitionSet
 						.addTransition(new ChangeBounds())
 //						.addTransition(new ChangeImageTransform())
-						.addTransition(new RotateTransition(StartActivity.this).startAngle(-45).endAngle(0).exiting(true))
+						.addTransition(new RotateTransition(StartActivity.this).startAngle(-45).endAngle(0).purpose("Start activity exit"))
 				;
 				exitTransitionSet.setDuration(getResources().getInteger(R.integer.transition_duration));
 				getWindow().setSharedElementExitTransition(exitTransitionSet);
@@ -50,7 +50,7 @@ public class StartActivity extends AppCompatActivity {
 				exitTransitionSet
 						.addTransition(new ChangeBounds())
 //						.addTransition(new ChangeImageTransform())
-						.addTransition(new RotateTransition(StartActivity.this).startAngle(0).endAngle(-45).exiting(false))
+						.addTransition(new RotateTransition(StartActivity.this).startAngle(0).endAngle(-45).purpose("Start activity return"))
 				;
 				exitTransitionSet.setDuration(getResources().getInteger(R.integer.transition_duration));
 				getWindow().setSharedElementExitTransition(exitTransitionSet);

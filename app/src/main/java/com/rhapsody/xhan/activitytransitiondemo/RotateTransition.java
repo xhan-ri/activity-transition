@@ -2,8 +2,6 @@ package com.rhapsody.xhan.activitytransitiondemo;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
-import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
@@ -23,7 +21,7 @@ public class RotateTransition extends Transition {
 	private float startAngle, endAngle;
 	Context context;
 	final String transitionName;
-	boolean exiting = false;
+	private String purpose;
 	public RotateTransition(Context context) {
 		this.context = context;
 		transitionName = context.getString(R.string.transition_name);
@@ -36,7 +34,7 @@ public class RotateTransition extends Transition {
 		}
 
 		Log.i(LOG_TAG, ".");
-		Log.i(LOG_TAG, "Capturing start value for view = " + transitionValues.view.getTransitionName() + ", context = " + context.getClass().getSimpleName() + ", exiting = " + exiting);
+		Log.i(LOG_TAG, "Capturing start value for view = " + transitionValues.view.getTransitionName() + ", purpose = " + purpose);
 		Log.i(LOG_TAG, "Before capture: " + dumpMap(transitionValues.values));
 		if (transitionValues.view.getTransitionName().equals(transitionName)) {
 			captureValues(transitionValues, startAngle);
@@ -52,7 +50,7 @@ public class RotateTransition extends Transition {
 			return;
 		}
 		Log.i(LOG_TAG, ".");
-		Log.i(LOG_TAG, "Capturing end value for view = " + transitionValues.view.getTransitionName() + ", context = " + context.getClass().getSimpleName() + ", exiting = " + exiting);
+		Log.i(LOG_TAG, "Capturing end value for view = " + transitionValues.view.getTransitionName() + ", purpose = " + purpose);
 		Log.i(LOG_TAG, "Before capture: " + dumpMap(transitionValues.values));
 		if (transitionValues.view.getTransitionName().equals(transitionName)) {
 			captureValues(transitionValues, endAngle);
@@ -72,7 +70,7 @@ public class RotateTransition extends Transition {
 		if (startValues == null || endValues == null) {
 			return null;
 		}
-		Log.i(LOG_TAG, "Creating animator for view = " + startValues.view.getTransitionName());
+		Log.i(LOG_TAG, "Creating animator for view = " + startValues.view.getTransitionName() + ", purpose = " + purpose);
 		final View view = endValues.view;
 		final float startRotation = (float)startValues.values.get(getPropKey(PROP_ROTATION, view));
 		final float endRotation = (float)endValues.values.get(getPropKey(PROP_ROTATION, view));
@@ -88,7 +86,7 @@ public class RotateTransition extends Transition {
 		rotateAnimator.addListener(new Animator.AnimatorListener() {
 			@Override
 			public void onAnimationStart(Animator animation) {
-				Log.i(LOG_TAG, "Transition animation started context = " + context.getClass().getSimpleName()  + ", exiting = " + exiting);
+				Log.i(LOG_TAG, "Transition animation started, purpose = " + purpose);
 			}
 
 			@Override
@@ -131,8 +129,8 @@ public class RotateTransition extends Transition {
 		return this;
 	}
 
-	public RotateTransition exiting(boolean exiting) {
-		this.exiting = exiting;
+	public RotateTransition purpose(String purpose) {
+		this.purpose = purpose;
 		return this;
 	}
 }
